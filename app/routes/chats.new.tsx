@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 export const action: ActionFunction = async ({ request }) => {
   const newChatId = await createNewChat();
-  return redirect(`/chats/${newChatId}`);
+  return redirect(`/new`);
 };
 
 async function createNewChat() {

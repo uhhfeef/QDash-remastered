@@ -88,9 +88,9 @@ export function AppSidebar() {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <div className="px-4  mb-2">
+        <div className="px-4 mb-2">
           <form method="post" action="/chats/new">
-            <Button className="w-full rounded-md" type="submit">New Dashboard</Button>
+            <Button className="w-full rounded-md" variant="outline">New Dashboard</Button>
           </form>
         </div>
 
