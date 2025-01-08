@@ -38,9 +38,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {/* <Navbar /> */}
         <SidebarProvider>
           <AppSidebar />
-          <main>
+          {/* <main>
             {children}
-          </main>
+          </main> */}
         </SidebarProvider>
         <ScrollRestoration />
         <Scripts />

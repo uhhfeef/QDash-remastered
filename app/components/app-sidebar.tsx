@@ -3,6 +3,7 @@ import { NavMain } from "./nav-main"
 import { CircleHelp, LifeBuoy, Ellipsis, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
+import { Outlet } from "@remix-run/react"
 
 import {
   Sidebar,
@@ -87,7 +88,11 @@ export function AppSidebar() {
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarHeader>
-        <Button className="mx-4 rounded-md" variant="outline">New Dashboard</Button>
+        <div className="px-4  mb-2">
+          <form method="post" action="/chats/new">
+            <Button className="w-full rounded-md" type="submit">New Dashboard</Button>
+          </form>
+        </div>
 
         <SidebarContent>
           <NavMain items={data.items} />
@@ -158,16 +163,18 @@ export function AppSidebar() {
           </DropdownMenuContent>
         </DropdownMenu>
         </header>
-        <div className="flex flex-1 flex-col gap-4 p-4">
+        {/* <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
             <div className="aspect-video rounded-xl bg-muted/100" />
             <div className="aspect-video rounded-xl bg-muted/100" />
             <div className="aspect-video rounded-xl bg-muted/100" />
           </div>
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
+        </div> */}
+
+        <div className="flex-1 h-[calc(100vh-4rem)] overflow-hidden">
+          <Outlet />
         </div>
-
-
       </SidebarInset>
 
     </SidebarProvider>
