@@ -19,7 +19,7 @@ import {
   
 export function NavMain({items}: {items: {title: string, url: string, icon: React.ComponentType<{ className?: string }>}[]}) {
     return (
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroup>
         <SidebarGroupLabel>Application</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>

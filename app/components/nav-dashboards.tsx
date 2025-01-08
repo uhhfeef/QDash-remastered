@@ -32,7 +32,7 @@ import {
   }) {
     const { isMobile } = useSidebar()
     return (
-      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+      <SidebarGroup>
         <SidebarGroupLabel>Dashboards</SidebarGroupLabel>
         <SidebarMenu>
           {dashboards.map((item) => (
