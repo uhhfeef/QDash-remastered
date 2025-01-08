@@ -1,4 +1,5 @@
 import { NavDashboards } from "./nav-dashboards"
+import { NavMain } from "./nav-main"
 import { CircleHelp, LifeBuoy, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
 
 import {
@@ -11,6 +12,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  SidebarHeader
 } from "./ui/sidebar"
 
 import {
@@ -19,6 +21,10 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
   } from "./ui/dropdown-menu"  
+
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+
+import { Button } from "./ui/button"
 
 // Menu items.
 const data = {
@@ -60,24 +66,24 @@ const data = {
 export function AppSidebar() {
   return (
     <Sidebar>
+      <SidebarHeader className="mb-2">
+        <SidebarMenu>
+          <SidebarMenuItem >
+            <div className="flex items-center gap-2">
+              <img
+                src="/logo.png"
+                alt="QDash"
+                className="h-8 w-auto block"
+              />
+              <span className="font-semibold text-lg font-outfit">QDash</span> 
+            </div>
+          </SidebarMenuItem>
+        </SidebarMenu>
+      </SidebarHeader>
+      <Button className="mx-4 rounded-md" variant="outline">New Dashboard</Button>
+
       <SidebarContent>
-        <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {data.items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <NavMain items={data.items} />
         <NavDashboards dashboards={data.dashboards} />
       </SidebarContent>
       <SidebarFooter>
@@ -85,8 +91,12 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton>
-                    <User2 /> Username
+                  <SidebarMenuButton className="h-12">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src="https://github.com/shadcn.png" />
+                    <AvatarFallback>AK</AvatarFallback>
+                    </Avatar>
+                    <span>Afeef</span>
                     <ChevronUp className="ml-auto" />
                   </SidebarMenuButton>
                 </DropdownMenuTrigger>
