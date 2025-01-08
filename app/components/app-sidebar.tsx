@@ -1,6 +1,6 @@
 import { NavDashboards } from "./nav-dashboards"
 import { NavMain } from "./nav-main"
-import { CircleHelp, LifeBuoy, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
+import { CircleHelp, LifeBuoy, Ellipsis, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
 
@@ -23,11 +23,14 @@ import {
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
+    DropdownMenuLabel,
+    DropdownMenuSeparator
   } from "./ui/dropdown-menu"  
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 import { Button } from "./ui/button"
+
 
 // Menu items.
 const data = {
@@ -124,7 +127,8 @@ export function AppSidebar() {
           </SidebarFooter>
       </Sidebar>
       <SidebarInset>
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b px-4">
+        <header className="flex justify-between items-center h-16 shrink-0  gap-2 border-b px-4">
+          <div className="flex items-center">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
           <Breadcrumb>
@@ -140,6 +144,18 @@ export function AppSidebar() {
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
+          </div>
+          <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Ellipsis className="h-6 w-6"/>  
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            <DropdownMenuItem>Share</DropdownMenuItem>
+            <DropdownMenuItem>Rename</DropdownMenuItem>
+            <DropdownMenuItem>Favorite</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive focus:text-destructive">Delete</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4">
           <div className="grid auto-rows-min gap-4 md:grid-cols-3">
@@ -149,6 +165,8 @@ export function AppSidebar() {
           </div>
           <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" />
         </div>
+
+
       </SidebarInset>
 
     </SidebarProvider>
