@@ -7,6 +7,7 @@ import { Paperclip, ArrowUp } from "lucide-react";
 import React, { useState } from "react";
 import { chatMessages } from "./chats.new";
 import type { LoaderFunction } from "@remix-run/node";
+import { ChatInput } from "~/components/chat-input";
 
 export const loader: LoaderFunction = async ({ params }) => {
     const chatId = params.chatId;  
@@ -40,33 +41,14 @@ export default function Chats() {
         { messages.map((msg, index) => (
             <div key={index} className="space-y-4">
             <div className="p-4 max-w-[80%] flex justify-start ">
-            <p>{msg.message}</p>    
+            <p className="text-sm text-gray-900">{msg.message}</p>    
             </div>
             </div>
         ))}
       </div>
       <div className="w-full px-4 pb-4">
-        <Form className="max-w-3xl mx-auto" method="post"  onSubmit={handleSubmit}>
-            <div className="relative">
-                <Input 
-                name="message"
-                className="rounded-2xl py-6 pr-24 pb-16 text-base shadow-sm border border-gray-300 focus-visible:ring-gray-200" 
-                placeholder="Ask a follow up..."
-                // value={inputValue}
-                // onChange={(e) => setInputValue(e.target.value)}
-                // value={message}
-                // onChange={(e) => setMessage(e.target.value)}
-                />
-                <div className="absolute bottom-2 left-2 right-2 flex justify-between ">
-                    <Button size="icon" variant="ghost" className="border p-3 hover:bg-gray-100 rounded-xl">
-                        <Paperclip className="rounded-md h-8 w-8 text-gray-600" />
-                    </Button>
-                    <Button size="icon" variant="ghost" className="bg-gray-100 hover:bg-black text-gray-600 hover:text-white p-3 rounded-full">
-                        <ArrowUp className=" h-8 w-8" />
-                    </Button>
-                </div>
-            </div>
-        </Form>
+        <ChatInput onSubmit={handleSubmit} />
+        <div className="flex items-center justify-center pt-2 text-xs text-gray-500">QDash may make mistakes. Please use with discretion.</div>
       </div>
     </div>
   );
