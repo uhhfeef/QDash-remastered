@@ -5,7 +5,7 @@ import { Paperclip, ArrowUp } from "lucide-react";
 
 interface ChatInputProps {
     placeholder?: string;
-    onSubmit?: (e: React.FormEvent) => void;
+    onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
   
 export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatInputProps) {
