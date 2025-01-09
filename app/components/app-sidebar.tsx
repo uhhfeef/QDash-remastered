@@ -4,6 +4,7 @@ import { CircleHelp, LifeBuoy, Ellipsis, Inbox, BookOpen, Settings, User2, Chevr
 import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
 import { Outlet, useLocation, Link } from "@remix-run/react"
+import { AccountSettingsDialog } from "./accountSettings"
 
 import {
   Sidebar,
@@ -27,6 +28,16 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator
   } from "./ui/dropdown-menu"  
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog"
+
 
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
@@ -106,6 +117,7 @@ export function AppSidebar() {
         <SidebarFooter>
             <SidebarMenu>
               <SidebarMenuItem>
+              <Dialog>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <SidebarMenuButton className="h-12">
@@ -121,9 +133,14 @@ export function AppSidebar() {
                     side="top"
                     className="w-[--radix-popper-anchor-width]"
                   >
-                    <DropdownMenuItem>
-                      <span>Account</span>
-                    </DropdownMenuItem>
+                    <DialogTrigger asChild>
+                      <DropdownMenuItem onSelect={(e) => e.preventDefault()}>
+                          <span>Account</span>
+                      </DropdownMenuItem>
+                    </DialogTrigger>
+                    <AccountSettingsDialog />
+
+                    
                     <DropdownMenuItem>
                       <span>Billing</span>
                     </DropdownMenuItem>
@@ -132,6 +149,7 @@ export function AppSidebar() {
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
+                </Dialog>
               </SidebarMenuItem>
             </SidebarMenu>
           </SidebarFooter>
