@@ -1,14 +1,16 @@
-import type { LoaderFunctionArgs } from "@remix-run/node"; // or cloudflare/deno
 import { json } from "@remix-run/node"; // or cloudflare/deno
 import { useLoaderData, Form, useParams } from "@remix-run/react";
-import { Input } from "~/components/ui/input";
-import { Button } from "~/components/ui/button";
-import { Paperclip, ArrowUp } from "lucide-react";
 import React, { useState } from "react";
 import { chatMessages } from "./chats.new";
 import type { LoaderFunction } from "@remix-run/node";
 import { ChatInput } from "~/components/chat-input";
 
+  /**
+   * Given a chat ID from the URL, load the messages associated with that chat
+   * and return them as JSON.
+   * @param {LoaderFunctionArgs} args - The Remix loader function arguments
+   * @returns {Promise< Response >} - A JSON response containing the chat messages
+   */
 export const loader: LoaderFunction = async ({ params }) => {
     const chatId = params.chatId;  
     if (!chatId) {
