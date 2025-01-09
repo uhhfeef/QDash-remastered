@@ -1,9 +1,8 @@
-import { useLoaderData, Form, useParams } from "@remix-run/react";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { Paperclip, ArrowUp } from "lucide-react";
+
+import { ChatInput } from "../components/chat-input";
 
 export default function New() {
+
     return (
       <div className="absolute inset-0 flex flex-col min-h-full items-center justify-center max-w-[40rem] mx-auto gap-4">
         <div className="text-6xl text-gray-800 font-semibold items-center mb-6">
@@ -12,18 +11,7 @@ export default function New() {
         
         <div className="flex flex-col w-full gap-5">
           <div className="relative flex items-center">
-            <Input 
-              className="rounded-2xl py-6 pr-24 text-base shadow-sm border border-gray-300 focus-visible:ring-gray-200" 
-              placeholder="Create a line chart on..."
-            />
-            <div className="absolute right-2 flex">
-              <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-xl">
-                <Paperclip className="h-8 w-8 text-gray-600" />
-              </Button>
-              <Button size="icon" variant="ghost" className="hover:bg-gray-100 rounded-xl">
-                <ArrowUp className="h-8 w-8 text-gray-600" />
-              </Button>
-            </div>
+            <ChatInput placeholder="Create a line chart on..." />
           </div>
         </div>
 
