@@ -17,6 +17,7 @@ export const action: ActionFunction = async ({ request }) => {
 
     if (message?.trim()) {
         chatMessages.set(newChatId, [{message: message}]);
+        // console.log(chatMessages);
     }
     return redirect(`/chats/${newChatId}`);
 };
