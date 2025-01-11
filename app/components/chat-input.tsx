@@ -12,12 +12,8 @@ export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatI
   const params = useParams();
   const chatId = params.chatId;
 
-  const action = chatId 
-    ? `/chats/${chatId}` 
-    : `/chats/new`;
-
   return (
-      <Form className="max-w-3xl w-full mx-auto" method="post" action={action}  onSubmit={onSubmit}>
+      <Form className="max-w-3xl w-full mx-auto" method="post" onSubmit={onSubmit}>
       <div className="relative">
           <Input 
           name="message"
