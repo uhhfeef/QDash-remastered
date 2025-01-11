@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { db } from "~/utils/db.server";
 import { getChatResponse, type Message } from "~/utils/openai.server";
-
+import { chatMessages } from "./chats.new";
 // export const loader: LoaderFunction = async ({ params }) => {
 
 //     // return json({ messages: chat.messages });
@@ -22,6 +22,13 @@ import { getChatResponse, type Message } from "~/utils/openai.server";
 interface ActionData {
     messages: Message[];
 }
+
+export const loader: LoaderFunction = async ({ params }) => {
+    const chatId = params.chatId as string;
+    const messages = chatMessages.get(chatId) || [];
+    console.log('LOADER MESSAGES:', messages);
+    return json({ messages });
+};
 
 export const action: ActionFunction = async ({ request, params }) => {
     // to send chatgpt request since its a server only module
@@ -38,9 +45,17 @@ export const action: ActionFunction = async ({ request, params }) => {
 
 
 export default function Chats() {
-    const [messages, setMessages] = useState<Message[]>([]);
+    const { messages: initialMessages } = useLoaderData<{ messages: Message[] }>();
+    const [messages, setMessages] = useState<Message[]>(initialMessages || []);
     const fetcher = useFetcher<ActionData>();
+    const { chatId } = useParams();
 
+    // Reset messages when chatId changes
+    useEffect(() => {
+        setMessages(initialMessages);
+    }, [chatId]);
+
+    // Update messages when the fetcher data changes
     useEffect(() => {
         const data = fetcher.data;
         if (data && 'messages' in data) {
@@ -60,11 +75,9 @@ export default function Chats() {
             // const aiResponse = await getChatResponse(messages);
             // console.log('AI RESPONSE:', aiResponse);
             // setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
-
+            // Submit to action to get AI response
+            fetcher.submit(formData, { method: "post" });
         }
-
-        // Submit to action to get AI response
-        fetcher.submit(formData, { method: "post" });
 
         e.currentTarget.reset();
 
@@ -89,7 +102,11 @@ export default function Chats() {
                     {messages.map((message, index) => (
                             <div className="flex py-3 gap-2" key={index}>
                                 <Avatar className="h-8 w-8">
+                                {message.role === 'user' ? (
                                     <AvatarFallback>U</AvatarFallback>
+                                ) : (
+                                    <AvatarFallback>AI</AvatarFallback>
+                                )}
                                 </Avatar>
                                 <div className="px-4 rounded-lg max-w-[80%]">
                                     <p className="text-sm text-gray-900">{message.content}</p>
