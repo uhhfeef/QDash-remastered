@@ -3,7 +3,7 @@ import { NavMain } from "./nav-main"
 import { CircleHelp, LifeBuoy, Ellipsis, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
-import { Outlet, useLocation, Link } from "@remix-run/react"
+import { Outlet, useLocation, Form } from "@remix-run/react"
 import { AccountSettingsDialog } from "./accountSettings"
 
 import {
@@ -103,9 +103,9 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarHeader>
         <div className="px-4 mb-2">
-        <Link to="/new">
-          <Button className="w-full rounded-md" variant="outline">New Dashboard</Button>
-        </Link>
+        <Form method="post" action="/chats/new">
+          <Button type="submit" className="w-full rounded-md" variant="outline">New Dashboard</Button>
+        </Form>
         </div>
 
         <SidebarContent>
