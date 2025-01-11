@@ -5,6 +5,7 @@ import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
 import { Outlet, useLocation, Form } from "@remix-run/react"
 import { AccountSettingsDialog } from "./accountSettings"
+import { dashboards } from "~/routes/chats.new"
 
 import {
   Sidebar,
@@ -84,7 +85,8 @@ const data = {
 export function AppSidebar() {
   const location = useLocation();
   const isNewRoute = location.pathname === "/new";
-
+  // console.log('DASHBOARDS:', dashboards);
+  console.log(Array.from(dashboards.values()));
   return (
     <SidebarProvider>
       <Sidebar>
@@ -111,7 +113,7 @@ export function AppSidebar() {
         <SidebarContent>
           <NavMain items={data.items} />
           <Separator />
-          <NavDashboards dashboards={data.dashboards} />
+          <NavDashboards dashboards={Array.from(dashboards.values())} />
         </SidebarContent>
         
         <SidebarFooter>
