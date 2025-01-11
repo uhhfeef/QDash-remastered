@@ -1,9 +1,8 @@
 
 import { ChatInput } from "../components/chat-input";
-import { v4 as uuidv4 } from 'uuid';
 
 export default function New() {
-    const newChatId = uuidv4();
+
     return (
       <div className="absolute inset-0 flex flex-col min-h-full items-center justify-center max-w-[40rem] mx-auto gap-4">
         <div className="text-6xl text-gray-800 font-semibold items-center mb-6">
