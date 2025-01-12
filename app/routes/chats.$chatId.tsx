@@ -72,9 +72,8 @@ export default function Chats() {
             // console.log("Message submitted:", message);
             setMessages(prev => [...prev, { role: 'user', content: message }]);
             console.log('set messages:', messages);
-            // const aiResponse = await getChatResponse(messages);
             // console.log('AI RESPONSE:', aiResponse);
-            // setMessages(prev => [...prev, { role: 'assistant', content: aiResponse }]);
+
             // Submit to action to get AI response
             fetcher.submit(formData, { method: "post" });
         }
