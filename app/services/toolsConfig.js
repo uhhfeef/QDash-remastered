@@ -1,8 +1,4 @@
-interface tableSchema {
-    schema: string;
-}
-
-export function generateTools(tableSchema: tableSchema) {
+export function generateTools(tableSchema) {
     return [
         {
             type: "function",
