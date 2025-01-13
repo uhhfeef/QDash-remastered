@@ -13,6 +13,7 @@ import { json } from "@remix-run/node";
 import { dashboards } from "./routes/chats.new";
 
 import "./tailwind.css";
+import { getAllSidebarItems } from "./db.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -30,8 +31,9 @@ export const links: LinksFunction = () => [
 // exposes this content to all pages. 
 // TODO: chk if common practice
 export const loader: LoaderFunction = async () => {
+  const dashboards = await getAllSidebarItems();
   return json({
-    dashboards: Array.from(dashboards.values())
+    dashboards
   });
 };
 
