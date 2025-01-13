@@ -1,3 +1,4 @@
+import * as React from "react"
 import {
     Share,
     Archive,
@@ -21,27 +22,37 @@ import {
     SidebarMenuItem,
     useSidebar,
   } from "./ui/sidebar"
+import { Form, Link, useLocation } from "@remix-run/react"
   
   export function NavDashboards({
     dashboards,
   }: {
     dashboards: {
+      id: string
       name: string
       url: string
     }[]
   }) {
     // console.log('DASHBOARDS:', dashboards); 
     const { isMobile } = useSidebar()
+    const [activeItem, setActiveItem] = React.useState('')
+    console.log('ACTIVE ITEM:', activeItem);
+
+    const location = useLocation();
+
     return (
       <SidebarGroup>
         <SidebarGroupLabel>Dashboards</SidebarGroupLabel>
         <SidebarMenu>
           {[...dashboards].reverse().map((item) => (
-            <SidebarMenuItem key={item.name}>
-              <SidebarMenuButton asChild>
-                <a href={item.url} title={item.name}>
+            <SidebarMenuItem key={item.id}>
+              <SidebarMenuButton
+              isActive={location.pathname === item.url}
+              onClick={() => setActiveItem(item.id)}
+              asChild>
+                <Link to={item.url} title={item.name}>
                   <span>{item.name}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -75,8 +86,13 @@ import {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    <Trash2 className="text-destructive" />
-                    <span>Delete</span>
+                    <Form method="post" action="/chats/delete">
+                      <input type="hidden" name="chatId" value={item.id} />
+                      <button type="submit" className="w-full">
+                        <Trash2 className="text-destructive" />
+                        <span>Delete</span>
+                      </button>
+                    </Form>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>

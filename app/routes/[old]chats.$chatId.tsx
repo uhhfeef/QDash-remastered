@@ -6,7 +6,6 @@ import type { LoaderFunction } from "@remix-run/node";
 import { ChatInput } from "~/components/chat-input";
 // import { openai, getChatResponse } from '~/utils/openai.server';
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { db } from "~/utils/db.server";
 
 interface Message {
     id: string;

@@ -13,7 +13,7 @@ import { json } from "@remix-run/node";
 import { dashboards } from "./routes/chats.new";
 
 import "./tailwind.css";
-import { getAllSidebarItems } from "./db.server";
+import { getAllSidebarItems } from "./utils/db.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

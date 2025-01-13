@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { v4 as uuidv4 } from 'uuid';
 import { json } from "@remix-run/node";
-import { createSidebarItem, getAllSidebarItems } from "~/db.server";
+import { createSidebarItem, getAllSidebarItems } from "~/utils/db.server";
 // import { db } from "~/utils/db.server";
 
 const chatMessages = new Map<string, Array<{message: string}>>();

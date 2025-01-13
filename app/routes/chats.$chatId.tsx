@@ -5,7 +5,6 @@ import Split from "react-split";
 import { ChatInput } from "~/components/chat-input";
 import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { db } from "~/utils/db.server";
 import { getChatResponse, type Message } from "~/utils/openai.server";
 import { chatMessages } from "./chats.new";
 // export const loader: LoaderFunction = async ({ params }) => {
