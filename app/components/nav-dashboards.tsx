@@ -36,7 +36,7 @@ import {
       <SidebarGroup>
         <SidebarGroupLabel>Dashboards</SidebarGroupLabel>
         <SidebarMenu>
-          {dashboards.map((item) => (
+          {[...dashboards].reverse().map((item) => (
             <SidebarMenuItem key={item.name}>
               <SidebarMenuButton asChild>
                 <a href={item.url} title={item.name}>
