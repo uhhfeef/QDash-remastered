@@ -36,7 +36,7 @@ import { Form, Link, useLocation } from "@remix-run/react"
     // console.log('DASHBOARDS:', dashboards); 
     const { isMobile } = useSidebar()
     const [activeItem, setActiveItem] = React.useState('')
-    console.log('ACTIVE ITEM:', activeItem);
+    // console.log('ACTIVE ITEM:', activeItem);
 
     const location = useLocation();
 

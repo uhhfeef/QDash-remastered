@@ -174,7 +174,9 @@ export function AppSidebar() {
                 </BreadcrumbItem>
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
-                  <BreadcrumbPage>Sales dashboard</BreadcrumbPage>
+                  <BreadcrumbPage>
+                    {dashboards.find(d => d.url === location.pathname)?.name || location.pathname}
+                  </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
