@@ -1,10 +1,19 @@
 import { redirect } from "@remix-run/node";
-import type { ActionFunction } from "@remix-run/node";
+import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { v4 as uuidv4 } from 'uuid';
+import { json } from "@remix-run/node";
 // import { db } from "~/utils/db.server";
 
 const chatMessages = new Map<string, Array<{message: string}>>();
 const dashboards = new Map<string, {name: string, url: string}>();
+
+// export const loader: LoaderFunction = async () => {
+//     console.log('=== LOADER TRIGGERED ===');
+//     console.log('DASHBOARDS:', dashboards);
+//     return json({
+//         dashboards: Array.from(dashboards.values())
+//     });
+// };
 
 export const action: ActionFunction = async ({ request }) => {
     console.log('=== ACTION TRIGGERED ===');

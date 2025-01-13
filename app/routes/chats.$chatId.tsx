@@ -26,7 +26,7 @@ interface ActionData {
 export const loader: LoaderFunction = async ({ params }) => {
     const chatId = params.chatId as string;
     const messages = chatMessages.get(chatId) || [];
-    console.log('LOADER MESSAGES:', messages);
+    // console.log('LOADER MESSAGES:', messages);
     return json({ messages });
 };
 

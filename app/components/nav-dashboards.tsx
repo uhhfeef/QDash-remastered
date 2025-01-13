@@ -30,6 +30,7 @@ import {
       url: string
     }[]
   }) {
+    // console.log('DASHBOARDS:', dashboards); 
     const { isMobile } = useSidebar()
     return (
       <SidebarGroup>

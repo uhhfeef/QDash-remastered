@@ -3,7 +3,7 @@ import { NavMain } from "./nav-main"
 import { CircleHelp, LifeBuoy, Ellipsis, Inbox, BookOpen, Settings, User2, ChevronUp } from "lucide-react"
 import { Separator } from "./ui/separator"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "./ui/breadcrumb"
-import { Outlet, useLocation, Form } from "@remix-run/react"
+import { Outlet, useLocation, Form, useLoaderData } from "@remix-run/react"
 import { AccountSettingsDialog } from "./accountSettings"
 import { dashboards } from "~/routes/chats.new"
 
@@ -85,8 +85,9 @@ const data = {
 export function AppSidebar() {
   const location = useLocation();
   const isNewRoute = location.pathname === "/new";
+  const { dashboards } = useLoaderData<{ dashboards: Array<{ name: string, url: string }> }>();
   // console.log('DASHBOARDS:', dashboards);
-  console.log(Array.from(dashboards.values()));
+  // console.log(Array.from(dashboards.values()));
   return (
     <SidebarProvider>
       <Sidebar>
