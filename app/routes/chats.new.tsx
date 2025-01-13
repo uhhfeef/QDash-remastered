@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
     //     url: newChatUrl
     // });
 
-    await createSidebarItem({ name: dashboardName, url: newChatUrl });
+    await createSidebarItem({ name: dashboardName, url: newChatUrl, createdAt: new Date() });
 
     // console.log('DASHBOARDS:', dashboards); // works
     // shud open a new chat 

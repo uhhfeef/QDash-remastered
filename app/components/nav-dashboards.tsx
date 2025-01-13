@@ -31,6 +31,7 @@ import { Form, Link, useLocation } from "@remix-run/react"
       id: string
       name: string
       url: string
+      createdAt: Date
     }[]
   }) {
     // console.log('DASHBOARDS:', dashboards); 
@@ -85,11 +86,11 @@ import { Form, Link, useLocation } from "@remix-run/react"
                     <span>Archive</span>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem className="text-destructive focus:text-destructive">
-                    <Form method="post" action="/chats/delete">
+                  <DropdownMenuItem className="text-destructive focus:text-destructive p-0">
+                    <Form method="post" action="/chats/delete" className="w-full">
                       <input type="hidden" name="chatId" value={item.id} />
-                      <button type="submit" className="w-full">
-                        <Trash2 className="text-destructive" />
+                      <button type="submit" className="flex w-full items-center gap-2 px-2 py-1.5">
+                        <Trash2 className="h-4 w-4 text-destructive" />
                         <span>Delete</span>
                       </button>
                     </Form>

@@ -29,14 +29,16 @@ export async function getAllSidebarItems() {
   });
 }
 
-export async function createSidebarItem({ name, url }: { name: string; url: string }) {
+export async function createSidebarItem({ name, url, createdAt }: { name: string; url: string; createdAt: Date }) {
   console.log('=== CREATING SIDEBAR ITEM ===');
   console.log('NAME:', name);
   console.log('URL:', url);
+  console.log('CREATED AT:', createdAt);
   return prisma.sidebar.create({
     data: {
       name,
       url,
+      createdAt,
     },
   });
 }

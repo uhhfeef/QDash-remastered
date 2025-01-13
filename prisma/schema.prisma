@@ -11,6 +11,7 @@ model Sidebar {
   id        String   @id @default(uuid())
   name      String
   url       String
+  createdAt DateTime @default(now())
 } 
 
 model Chat {

@@ -85,7 +85,7 @@ const data = {
 export function AppSidebar() {
   const location = useLocation();
   const isNewRoute = location.pathname === "/new";
-  const { dashboards } = useLoaderData<{ dashboards: Array<{ id: string, name: string, url: string }> }>();
+  const { dashboards } = useLoaderData<{ dashboards: Array<{ id: string, name: string, url: string, createdAt: Date }> }>();
   // console.log('DASHBOARDS:', dashboards);
   // console.log(Array.from(dashboards.values()));
   return (
