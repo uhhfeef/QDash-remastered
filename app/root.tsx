@@ -30,11 +30,19 @@ export const links: LinksFunction = () => [
 
 // exposes this content to all pages. 
 // TODO: chk if common practice
+// TODO: refactor 
 export const loader: LoaderFunction = async () => {
-  const dashboards = await getAllSidebarItems();
-  return json({
-    dashboards
-  });
+  try {
+    const dashboards = await getAllSidebarItems();
+    return json({
+      dashboards: dashboards || []
+    });
+  } catch (error) {
+    console.error('Error loading dashboards:', error);
+    return json({
+      dashboards: []
+    });
+  }
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
