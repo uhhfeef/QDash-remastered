@@ -7,6 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getChatResponse, type Message } from "~/utils/openai.server";
 import { chatMessages } from "./chats.new";
+import { storeChat } from "~/utils/db.server";
 // export const loader: LoaderFunction = async ({ params }) => {
 
 //     // return json({ messages: chat.messages });
@@ -33,6 +34,8 @@ export const action: ActionFunction = async ({ request, params }) => {
     // to send chatgpt request since its a server only module
     const formData = await request.formData();
     const message = formData.get("message") as string;
+
+    await storeChat(message, 'user', params.chatId as string);
 
     // TO DO: needs to handle chat history
     const aiResponse = await getChatResponse([{ role: 'user', content: message }]); 
