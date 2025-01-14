@@ -22,37 +22,63 @@ if (process.env.NODE_ENV === "production") {
 
 export { prisma };
 
-// Sidebar functions
-export async function getAllSidebarItems() {
-  return prisma.sidebar.findMany({
-    orderBy: { name: 'asc' }
+// chat functions
+export async function getAllChatItems() {
+  return prisma.chat.findMany({
+    include: {
+      messages: true
+    },
+    orderBy: {
+      createdAt: 'desc'
+    }
   });
 }
 
-export async function createSidebarItem({ name, url, createdAt }: { name: string; url: string; createdAt: Date }) {
-  console.log('=== CREATING SIDEBAR ITEM ===');
+export async function createChatItem({ name, url, chatId }: { name: string; url: string; chatId: string }) {
+  console.log('=== CREATING chat ITEM ===');
   console.log('NAME:', name);
   console.log('URL:', url);
-  console.log('CREATED AT:', createdAt);
-  return prisma.sidebar.create({
+  // console.log('CREATED AT:', createdAt);
+  return prisma.chat.create({
     data: {
       name,
       url,
-      createdAt,
+      chatId
     },
   });
 }
 
-export async function deleteSidebarItem(id: string) {
-  console.log('=== DELETING SIDEBAR ITEM ===');
+export async function deleteChatItem(id: string) {
+  console.log('=== DELETING chat ITEM ===');
   console.log('ID:', id);
-  return prisma.sidebar.delete({
+  return prisma.chat.delete({
     where: { id },
   });
 }
 
-export async function getSidebarItem(id: string) {
-  return prisma.sidebar.findUnique({
+export async function getChatItem(id: string) {
+  return prisma.chat.findUnique({
     where: { id },
   });
 }
+
+export async function storeChatMessages(message: string, role: string, chatId: string) {
+    console.log('=== STORING CHAT ===');
+    console.log('MESSAGE:', message);
+    console.log('ROLE:', role);
+    console.log('CHAT ID:', chatId);
+
+    let chat = await prisma.chat.findUnique({ where: { id: chatId } });
+    // if(!chat) { // if chat doesn't exist, create it
+    //     chat = await prisma.chat.create({ data: { id: chatId } });
+    // }
+
+    return prisma.message.create({
+      data: {
+        role,
+        content: message,
+        chatId
+      }
+  });
+}
+

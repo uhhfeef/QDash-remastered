@@ -14,12 +14,22 @@ model Sidebar {
   createdAt DateTime @default(now())
 } 
 
-model Message {
-  id          String   @id @default(uuid())
-  content     String
-  role        String
-  dashboardId String   // References the ID from sidebar/dashboard system
-  createdAt   DateTime @default(now())
+model Chat {
+  id        String    @id @default(uuid())
+  name      String
+  url       String
+  chatId    String    @unique 
+  messages  Message[]
+  createdAt DateTime  @default(now())
+}
 
-  @@index([dashboardId]) // Add an index for better query performance
+model Message {
+  id        String   @id @default(uuid())
+  content   String
+  role      String
+  chatId    String   // References the Chat model
+  chat      Chat     @relation(fields: [chatId], references: [chatId])
+  createdAt DateTime @default(now())
+
+  @@index([chatId])
 }
