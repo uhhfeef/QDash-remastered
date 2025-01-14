@@ -5,7 +5,7 @@ import { json } from "@remix-run/node";
 import { createChatItem, getAllChatItems } from "~/utils/db.server";
 // import { db } from "~/utils/db.server";
 
-const chatMessages = new Map<string, Array<{message: string}>>();
+// const chatMessages = new Map<string, Array<{message: string}>>();
 const dashboards = new Map<string, {name: string, url: string}>();
 
 // export const loader: LoaderFunction = async () => {
@@ -24,7 +24,7 @@ export const action: ActionFunction = async ({ request }) => {
     const newChatId = uuidv4();
     // console.log('NEW CHAT ID:', newChatId);
 
-    chatMessages.set(newChatId, []);
+    // chatMessages.set(newChatId, []);
     // console.log('CHAT MESSAGES:', chatMessages);
 
     const chats = await getAllChatItems();
@@ -49,5 +49,5 @@ export const action: ActionFunction = async ({ request }) => {
 
 
 // Export the messages map to be used by other routes
-export { chatMessages };
+// export { chatMessages };
 export { dashboards };

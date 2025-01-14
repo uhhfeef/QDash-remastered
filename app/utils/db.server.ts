@@ -51,8 +51,24 @@ export async function createChatItem({ name, url, chatId }: { name: string; url:
 export async function deleteChatItem(id: string) {
   console.log('=== DELETING chat ITEM ===');
   console.log('ID:', id);
+  
+  // Get the chat first to find its chatId
+  const chat = await prisma.chat.findUnique({
+    where: { id }
+  });
+
+  if (!chat) {
+    throw new Error('Chat not found');
+  }
+
+  // Delete all messages using the chatId
+  await prisma.message.deleteMany({
+    where: { chatId: chat.chatId }  // Use chatId, not id
+  });
+
+  // Then delete the chat itself
   return prisma.chat.delete({
-    where: { id },
+    where: { id }
   });
 }
 
@@ -82,3 +98,6 @@ export async function storeChatMessages(message: string, role: string, chatId: s
   });
 }
 
+export async function getChatMessages(chatId: string) {
+    return prisma.message.findMany({ where: { chatId } });
+}

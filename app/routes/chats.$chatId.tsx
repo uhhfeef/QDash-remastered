@@ -6,8 +6,8 @@ import { ChatInput } from "~/components/chat-input";
 import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getChatResponse, type Message } from "~/utils/openai.server";
-import { chatMessages } from "./chats.new";
-import { storeChatMessages } from "~/utils/db.server";
+// import { chatMessages } from "./chats.new";
+import { getChatMessages, storeChatMessages } from "~/utils/db.server";
 // export const loader: LoaderFunction = async ({ params }) => {
 
 //     // return json({ messages: chat.messages });
@@ -25,7 +25,7 @@ interface ActionData {
 
 export const loader: LoaderFunction = async ({ params }) => {
     const chatId = params.chatId as string;
-    const messages = chatMessages.get(chatId) || [];
+    const messages = await getChatMessages(chatId) || [];
     // console.log('LOADER MESSAGES:', messages);
     return json({ messages });
 };
