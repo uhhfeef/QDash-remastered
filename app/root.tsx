@@ -13,7 +13,7 @@ import { json } from "@remix-run/node";
 import { dashboards } from "./routes/chats.new";
 
 import "./tailwind.css";
-import { getAllSidebarItems } from "./utils/db.server";
+import { getAllChatItems } from "./utils/db.server";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -33,14 +33,15 @@ export const links: LinksFunction = () => [
 // TODO: refactor 
 export const loader: LoaderFunction = async () => {
   try {
-    const dashboards = await getAllSidebarItems();
+    const chats = await getAllChatItems();
+    // console.log('chats:', chats); // works
     return json({
-      dashboards: dashboards || []
+      chats: chats || []
     });
   } catch (error) {
     console.error('Error loading dashboards:', error);
     return json({
-      dashboards: []
+      chats: []
     });
   }
 };

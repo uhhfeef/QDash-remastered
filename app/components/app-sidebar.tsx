@@ -85,7 +85,7 @@ const data = {
 export function AppSidebar() {
   const location = useLocation();
   const isNewRoute = location.pathname === "/new";
-  const { dashboards } = useLoaderData<{ dashboards: Array<{ id: string, name: string, url: string, createdAt: Date }> }>();
+  const { chats } = useLoaderData<{ chats: Array<{ id: string, name: string, url: string }> }>();
   // console.log('DASHBOARDS:', dashboards);
   // console.log(Array.from(dashboards.values()));
   return (
@@ -114,7 +114,7 @@ export function AppSidebar() {
         <SidebarContent>
           <NavMain items={data.items} />
           <Separator />
-          <NavDashboards dashboards={Array.from(dashboards.values())} />
+          <NavDashboards chats={chats} />
         </SidebarContent>
         
         <SidebarFooter>
@@ -175,7 +175,7 @@ export function AppSidebar() {
                 <BreadcrumbSeparator className="hidden md:block" />
                 <BreadcrumbItem>
                   <BreadcrumbPage>
-                    {dashboards.find(d => d.url === location.pathname)?.name || location.pathname}
+                    {chats.find(d => d.url === location.pathname)?.name || location.pathname}
                   </BreadcrumbPage>
                 </BreadcrumbItem>
               </BreadcrumbList>

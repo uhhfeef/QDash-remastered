@@ -25,13 +25,12 @@ import {
 import { Form, Link, useLocation } from "@remix-run/react"
   
   export function NavDashboards({
-    dashboards,
+    chats,
   }: {
-    dashboards: {
+    chats: {
       id: string
       name: string
       url: string
-      createdAt: Date
     }[]
   }) {
     // console.log('DASHBOARDS:', dashboards); 
@@ -45,7 +44,7 @@ import { Form, Link, useLocation } from "@remix-run/react"
       <SidebarGroup>
         <SidebarGroupLabel>Dashboards</SidebarGroupLabel>
         <SidebarMenu>
-          {[...dashboards].reverse().map((item) => (
+          {[...chats].map((item) => (
             <SidebarMenuItem key={item.id}>
               <SidebarMenuButton
               isActive={location.pathname === item.url}
