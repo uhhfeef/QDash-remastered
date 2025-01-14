@@ -2,7 +2,7 @@ import { redirect } from "@remix-run/node";
 import type { ActionFunction, LoaderFunction } from "@remix-run/node";
 import { v4 as uuidv4 } from 'uuid';
 import { json } from "@remix-run/node";
-import { createSidebarItem, getAllSidebarItems } from "~/utils/db.server";
+import { createChatItem, getAllChatItems } from "~/utils/db.server";
 // import { db } from "~/utils/db.server";
 
 const chatMessages = new Map<string, Array<{message: string}>>();
@@ -27,9 +27,9 @@ export const action: ActionFunction = async ({ request }) => {
     chatMessages.set(newChatId, []);
     // console.log('CHAT MESSAGES:', chatMessages);
 
-    const dashboards = await getAllSidebarItems();
+    const chats = await getAllChatItems();
 
-    const dashboardName = `Dashboard ${dashboards.length + 1}`
+    const chatName = `Chat ${chats.length + 1}`
     const newChatUrl = `/chats/${newChatId}`;
 
     // to do: create a database with prisma sqlite 
@@ -38,7 +38,7 @@ export const action: ActionFunction = async ({ request }) => {
     //     url: newChatUrl
     // });
 
-    await createSidebarItem({ name: dashboardName, url: newChatUrl, createdAt: new Date() });
+    await createChatItem({ name: chatName, url: newChatUrl, chatId: newChatId });
 
     // console.log('DASHBOARDS:', dashboards); // works
     // shud open a new chat 
