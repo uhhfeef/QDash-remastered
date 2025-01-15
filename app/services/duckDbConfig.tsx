@@ -4,7 +4,6 @@ import mvp_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?ur
 import duckdb_wasm_eh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
 import { useEffect, useRef, useState } from 'react';
-import { initDuckDB } from './[old]duckDbConfig';
 
 // // Select a bundle based on browser checks
 // const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
@@ -14,7 +13,19 @@ import { initDuckDB } from './[old]duckDbConfig';
 // const db = new duckdb.AsyncDuckDB(logger, worker);
 // await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
 
-export default function  useDuckDB() {
+const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
+  mvp: {
+      mainModule: duckdb_wasm,
+      mainWorker: mvp_worker,
+  },
+  eh: {
+      mainModule: duckdb_wasm_eh,
+      mainWorker: eh_worker,
+  },
+};
+
+
+function useDuckDB() {
   // state to manage db state + ref for init since ref doesnt re render 
   // useeffect for csr + 1 time init
   // state for db
@@ -31,18 +42,8 @@ export default function  useDuckDB() {
       console.log('DuckDB already initialized.');
       return;
     }
-    async function initDuckDB() {
+    const initDuckDB = async () => {
       console.log('=== INITIALIZING DUCKDB ===');
-      const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
-          mvp: {
-              mainModule: duckdb_wasm,
-              mainWorker: mvp_worker,
-          },
-          eh: {
-              mainModule: duckdb_wasm_eh,
-              mainWorker: eh_worker,
-          },
-        };
     
         // Select a bundle based on browser checks
         const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
@@ -56,8 +57,10 @@ export default function  useDuckDB() {
         const conn = await db.connect();
         URL.revokeObjectURL(bundle.mainWorker!);
         console.log("DuckDB-Wasm initialized successfully.");
-      }
+    };
     initDuckDB();
   }, []);
     return db;
 }
+
+export default useDuckDB;
