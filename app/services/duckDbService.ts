@@ -1,9 +1,11 @@
 import { initDuckDB } from './[old]duckDbConfig.js';
+import * as XLSX from 'xlsx';
+import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
 
-let db;
-let conn;
+// let db: AsyncDuckDB | null = null;
+// let conn= null;
 let isLoaded = false;
-let currentTableName = null;
+let currentTableName: null = null;
 let loadedTables = new Set();
 
 // export async function initialize(connection) {
@@ -30,11 +32,14 @@ export function getLoadedTables() {
 }
 
 // Convert Excel file to CSV data
-async function excelToCSV(file) {
+async function excelToCSV(file: File): Promise<File> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = async (e) => {
+        reader.onload = async (e: ProgressEvent<FileReader>) => {
             try {
+                if (!e.target?.result || !(e.target.result instanceof ArrayBuffer)) {
+                    throw new Error('Failed to read file');
+                }
                 const data = new Uint8Array(e.target.result);
                 const workbook = XLSX.read(data, { type: 'array' });
                 
@@ -62,7 +67,7 @@ async function excelToCSV(file) {
 }
 
 // This function handles both CSV and Excel file uploads
-export async function handleFileUpload(file: File) {
+export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null) {
     try {
         // if (!conn) {
         //     throw new Error("Database connection not initialized");
@@ -70,32 +75,28 @@ export async function handleFileUpload(file: File) {
         if (!file) {
             throw new Error("No file selected");
         }
-        const fileExtension = file.name?.split('.').pop().toLowerCase();
+        const fileExtension = file.name?.split('.')?.pop()?.toLowerCase();
         
         // Convert Excel to CSV if needed
-        const processFile: File = ['xlsx', 'xls'].includes(fileExtension) 
+        const processFile = ['xlsx', 'xls'].includes(fileExtension ?? '') 
             ? await excelToCSV(file)
             : file;
 
         const tableName = processFile.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '_');
         console.log(`Processing table: ${tableName}`);
 
-        const instance = await initDuckDB();
-        db = instance.db;
-        conn = instance.conn;
-        
         // Register the file content with DuckDB
-        await db.registerFileBuffer(processFile.name, new Uint8Array(await processFile.arrayBuffer()));
+        await db?.registerFileBuffer(processFile.name, new Uint8Array(await processFile.arrayBuffer()));
         
         // Check if the file has headers
-        const hasHeaders = await checkCsvHeaders(processFile.name);
+        const hasHeaders = await checkCsvHeaders(processFile.name, db, conn);
         if (hasHeaders === false) {
             alert('1 or more headers are not present in file: ' + file.name);
             return false;
         }
         
         // Create table from file
-        await conn.query(`
+        await conn?.query(`
             CREATE TABLE IF NOT EXISTS ${tableName} AS 
             SELECT * 
             FROM read_csv_auto('${processFile.name}', header=${hasHeaders}, AUTO_DETECT=true)
@@ -112,7 +113,7 @@ export async function handleFileUpload(file: File) {
         console.log('Current loaded tables:', Array.from(loadedTables));
         
         // Get schema information
-        const schemaInfo = await getSchema();
+        const schemaInfo = await getSchema(db, conn);
         isLoaded = true;
         return schemaInfo;
     } catch (error) {
@@ -121,7 +122,7 @@ export async function handleFileUpload(file: File) {
     }
 }
 
-export async function getSchema() {
+export async function getSchema(db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null) {
     try {
         if (!conn) {
             throw new Error("Database not initialized");
@@ -139,6 +140,7 @@ export async function getSchema() {
             AND name IN (${tableNames.map(name => `'${name}'`).join(',')})
             ORDER BY name
         `);
+        console.log('Schema:', result);
 
         return result;
     } catch (error) {
@@ -147,7 +149,7 @@ export async function getSchema() {
     }
 }
 
-export async function executeDuckDbQuery(query) {
+export async function executeDuckDbQuery(query: any) {
     try {
         if (!conn) {
             throw new Error("Database connection not initialized");
@@ -161,24 +163,24 @@ export async function executeDuckDbQuery(query) {
     }
 }
 
-export async function checkCsvHeaders(fileName) {
+export async function checkCsvHeaders(fileName: string, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null) {
     try {
         console.log('Checking CSV headers...');
         // Read first row as raw text to preserve commas
-        const rawResult = await conn.query(`
+        const rawResult = await conn?.query(`
             SELECT *
             FROM read_csv_auto('${fileName}', header=false, AUTO_DETECT=true)
             LIMIT 2
         `);
 
-        const rows = await rawResult.toArray();
-        if (rows.length < 2) {
+        const rows = await rawResult?.toArray();
+        if (!rows || rows?.length < 2) {
             return false; // Not enough rows to determine headers
         }
 
         // Get the first two rows
-        const firstRow = Object.values(rows[0]).join(',');  // Convert to CSV string
-        const secondRow = Object.values(rows[1]).join(','); // Convert to CSV string
+        const firstRow = Object.values(rows[0])?.join(',');  // Convert to CSV string
+        const secondRow = Object.values(rows[1])?.join(','); // Convert to CSV string
 
         // Split by comma and filter out empty values
         const potentialHeaders = firstRow.split(',').filter(val => val.trim() !== '');
@@ -200,21 +202,21 @@ export async function checkCsvHeaders(fileName) {
 }
 
 // converts arrows result from the executeDuckDbQuery function to rows
-function convertArrowToRows(arrowResult) {
-    const columns = arrowResult.schema.fields.map(field => field.name);
+function convertArrowToRows(arrowResult: { schema: { fields: any[]; }; batches: any; }) {
+    const columns = arrowResult.schema.fields.map((field: { name: any; }) => field.name);
     const rows = [];
     
     for (const batch of arrowResult.batches) {
         const numRows = batch.numRows;
         const columnData = {};
         
-        columns.forEach((col, i) => {
+        columns.forEach((col: string | number, i: any) => {
             columnData[col] = batch.getChildAt(i).toArray();
         });
         
         for (let i = 0; i < numRows; i++) {
             const row = {};
-            columns.forEach(col => {
+            columns.forEach((col: string | number) => {
                 let value = columnData[col][i];
                 if (typeof value === 'bigint') {
                     value = Number(value);
