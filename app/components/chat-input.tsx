@@ -3,6 +3,8 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Paperclip, ArrowUp } from "lucide-react";
 import { useState } from "react";
+import { handleFileUpload } from "~/services/duckDbService";
+import useDuckDB from "~/services/duckDbConfig";
 // import { handleFileUpload } from "~/utils/duckDbService";
 
 interface ChatInputProps {
@@ -13,10 +15,11 @@ interface ChatInputProps {
 export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatInputProps) {
   const params = useParams();
   const chatId = params.chatId;
+  const { db, conn } = useDuckDB();
 
   const [files, setFiles] = useState<File[]>([])
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFiles = Array.from(event.target.files || [])
     
     // Filter for only CSV and Excel files
@@ -32,6 +35,11 @@ export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatI
     })
 
     setFiles(prevFiles => [...prevFiles, ...validFiles])
+
+    for (const file of validFiles) {
+        const result = await handleFileUpload(file, db, conn);
+        // console.log('Result:', result);
+    }
     
     // Log the selected files
     validFiles.forEach(file => async () => {
