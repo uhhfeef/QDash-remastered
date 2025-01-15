@@ -31,6 +31,7 @@ function useDuckDB() {
   // state for db
   // // bundle checks and init
   const [db, setDb] = useState<duckdb.AsyncDuckDB | null>(null);
+  const [conn, setConn] = useState<duckdb.AsyncDuckDBConnection | null>(null);
   const init = useRef(false);
 
   
@@ -55,12 +56,13 @@ function useDuckDB() {
         setDb(db);
         init.current = true;
         const conn = await db.connect();
+        setConn(conn);
         URL.revokeObjectURL(bundle.mainWorker!);
         console.log("DuckDB-Wasm initialized successfully.");
     };
     initDuckDB();
   }, []);
-    return db;
+    return {db, conn};
 }
 
 export default useDuckDB;
