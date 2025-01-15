@@ -1,4 +1,4 @@
-import { initDuckDB } from './duckDbConfig.js';
+import { initDuckDB } from './[old]duckDbConfig.js';
 
 let db;
 let conn;

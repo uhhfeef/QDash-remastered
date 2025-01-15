@@ -14,6 +14,9 @@ import { dashboards } from "./routes/chats.new";
 
 import "./tailwind.css";
 import { getAllChatItems } from "./utils/db.server";
+import { initDuckDB } from "./services/[old]duckDbConfig";
+import { useEffect } from "react";
+import useDuckDB from "./services/duckDbConfig";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -47,6 +50,13 @@ export const loader: LoaderFunction = async () => {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const db = useDuckDB();
+
+  // useEffect(() => {
+  //   if (db) {
+  //     console.log("DuckDB initialized successfully.");
+  //   }
+  // }, [db]);
   return (
     <html lang="en">
       <head>
@@ -71,5 +81,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+  // everything is rendered in the app layout function not in here
+  // this just returns outlet
+
+  // useEffect(() => {
+  //   console.log("Starting DuckDB initialization...");
+  //   initDuckDB()
+  //     .then(() => {
+  //       console.log("DuckDB initialization completed successfully");
+  //     })
+  //     .catch((error) => {
+  //       console.error("Failed to initialize DuckDB:", error);
+  //     });
+  // }, []);
   return <Outlet />;
 }
