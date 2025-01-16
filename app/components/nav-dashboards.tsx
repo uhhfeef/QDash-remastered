@@ -23,6 +23,7 @@ import {
     useSidebar,
   } from "./ui/sidebar"
 import { Form, Link, useLocation } from "@remix-run/react"
+import { ScrollArea } from "./ui/scroll-area"
   
   export function NavDashboards({
     chats,

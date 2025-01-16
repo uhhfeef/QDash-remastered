@@ -43,6 +43,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 import { Button } from "./ui/button"
+import { ScrollArea } from "./ui/scroll-area"
 
 
 // Menu items.
@@ -114,7 +115,9 @@ export function AppSidebar() {
         <SidebarContent>
           <NavMain items={data.items} />
           <Separator />
-          <NavDashboards chats={chats} />
+          <ScrollArea type="always" className="rounded-md">
+            <NavDashboards chats={chats} />
+          </ScrollArea>
         </SidebarContent>
         
         <SidebarFooter>
