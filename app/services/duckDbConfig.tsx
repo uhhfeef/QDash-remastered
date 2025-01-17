@@ -3,7 +3,8 @@ import duckdb_wasm from '@duckdb/duckdb-wasm/dist/duckdb-mvp.wasm?url';
 import mvp_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-mvp.worker.js?url';
 import duckdb_wasm_eh from '@duckdb/duckdb-wasm/dist/duckdb-eh.wasm?url';
 import eh_worker from '@duckdb/duckdb-wasm/dist/duckdb-browser-eh.worker.js?url';
-import { useEffect, useRef, useState } from 'react';
+import { createContext, useContext, useEffect, useRef, useState } from 'react';
+
 
 // // Select a bundle based on browser checks
 // const bundle = await duckdb.selectBundle(MANUAL_BUNDLES);
@@ -12,6 +13,10 @@ import { useEffect, useRef, useState } from 'react';
 // const logger = new duckdb.ConsoleLogger();
 // const db = new duckdb.AsyncDuckDB(logger, worker);
 // await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+
+interface duckDBProviderProps {
+  children: React.ReactNode;
+}
 
 const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
   mvp: {
@@ -24,8 +29,16 @@ const MANUAL_BUNDLES: duckdb.DuckDBBundles = {
   },
 };
 
+// global state management to give context to all children
+// because it was re initilizing on each child element (chat)
+type DuckDBState = {
+  db: duckdb.AsyncDuckDB | null,
+  conn: duckdb.AsyncDuckDBConnection | null,
+}
 
-function useDuckDB() {
+const DuckDBStateContext = createContext<DuckDBState | null>(null);
+
+export function DuckDBProvider({ children }: duckDBProviderProps) {
   // state to manage db state + ref for init since ref doesnt re render 
   // useeffect for csr + 1 time init
   // state for db
@@ -62,7 +75,20 @@ function useDuckDB() {
     };
     initDuckDB();
   }, []);
-    return {db, conn};
+    return (
+      <DuckDBStateContext.Provider value={{ db, conn }}>
+        {/* provides the context for all children within this component */}
+        {children}
+      </DuckDBStateContext.Provider>
+    );
 }
 
-export default useDuckDB;
+export function useDuckDB() {
+  const context = useContext(DuckDBStateContext);
+  if (!context) {
+    throw new Error('useDuckDB must be used within a DuckDBProvider');
+  }
+  return context;
+}
+
+

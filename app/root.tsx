@@ -16,7 +16,8 @@ import "./tailwind.css";
 import { getAllChatItems } from "./utils/db.server";
 import { initDuckDB } from "./services/[old]duckDbConfig";
 import { useEffect } from "react";
-import useDuckDB from "./services/duckDbConfig";
+// import useDuckDB from "./services/duckDbConfig";
+import { DuckDBProvider } from "./services/duckDbConfig";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -50,7 +51,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const db = useDuckDB();
+  // const db = useDuckDB();
 
   // useEffect(() => {
   //   if (db) {
@@ -66,15 +67,17 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Links />
       </head>
       <body>
-        {/* <Navbar /> */}
-        <SidebarProvider>
-          <AppSidebar />
-          {/* <main>
-            {children}
-          </main> */}
-        </SidebarProvider>
-        <ScrollRestoration />
-        <Scripts />
+        <DuckDBProvider>
+          {/* <Navbar /> */}
+          <SidebarProvider>
+            <AppSidebar />
+            {/* <main>
+              {children}
+            </main> */}
+          </SidebarProvider>
+          <ScrollRestoration />
+          <Scripts />
+        </DuckDBProvider>
       </body>
     </html>
   );
