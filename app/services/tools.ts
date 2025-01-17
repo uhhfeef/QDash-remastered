@@ -1,8 +1,7 @@
-interface tableSchema {
-    schema: string;
-}
 
-export function generateTools(tableSchema: tableSchema) {
+
+// to do: refactor like swarm
+export function generateTools(tableSchema: string) {
     return [
         {
             type: "function",

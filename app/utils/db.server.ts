@@ -66,6 +66,10 @@ export async function deleteChatItem(id: string) {
     where: { chatId: chat.chatId }  // Use chatId, not id
   });
 
+  await prisma.chatTools.delete({
+    where: { chatId: chat.chatId }
+  });
+
   // Then delete the chat itself
   return prisma.chat.delete({
     where: { id }
@@ -100,4 +104,39 @@ export async function storeChatMessages(message: string, role: string, chatId: s
 
 export async function getChatMessages(chatId: string) {
     return prisma.message.findMany({ where: { chatId } });
+}
+
+export async function storeChatTools(tools: string, chatId: string) {
+    if (!chatId) throw new Error('chatId is required');
+    
+    // const toolString = JSON.stringify(tools);
+    console.log('=== STORING CHAT TOOLS ===');
+    // console.log('TOOLS:', tools);
+    // console.log('CHAT ID:', chatId);
+    
+    return prisma.chatTools.upsert({
+        where: {
+            chatId: chatId
+        },
+        update: {
+            tools: tools
+        },
+        create: {
+            chatId: chatId,
+            tools: tools
+        }
+    });
+}
+
+export async function getChatTools(chatId: string) {
+    if (!chatId) return null;
+    
+    const chatTools = await prisma.chatTools.findUnique({
+        where: {
+            chatId: chatId
+        }
+    });
+    
+    if (!chatTools) return null;
+    return JSON.parse(chatTools.tools);
 }

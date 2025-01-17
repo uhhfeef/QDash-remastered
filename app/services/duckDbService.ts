@@ -1,12 +1,15 @@
 import { initDuckDB } from './[old]duckDbConfig.js';
 import * as XLSX from 'xlsx';
 import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
+import { generateTools } from './tools';
+import { storeChatTools } from '~/utils/db.server';
 
 // let db: AsyncDuckDB | null = null;
 // let conn= null;
 let isLoaded = false;
 let currentTableName: null = null;
 let loadedTables = new Set();
+let tools = [];
 
 // export async function initialize(connection) {
 //     if (!connection) {
@@ -67,7 +70,7 @@ async function excelToCSV(file: File): Promise<File> {
 }
 
 // This function handles both CSV and Excel file uploads
-export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null) {
+export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null, chatId: string): Promise<any> {
     try {
         // if (!conn) {
         //     throw new Error("Database connection not initialized");
@@ -115,6 +118,13 @@ export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn:
         // Get schema information
         const schemaInfo = await getSchema(db, conn);
         isLoaded = true;
+
+        // tools =  generateTools(schemaInfo);
+        // console.log('Tools updated with new schema:', tools);
+
+        // // store tools in db
+        // await storeChatTools(tools, chatId);
+
         return schemaInfo;
     } catch (error) {
         console.error("Error uploading file:", error);

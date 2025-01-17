@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getChatResponse, type Message } from "~/utils/openai.server";
 // import { chatMessages } from "./chats.new";
-import { getChatMessages, storeChatMessages } from "~/utils/db.server";
+import { getChatMessages, storeChatMessages, storeChatTools } from "~/utils/db.server";
 // export const loader: LoaderFunction = async ({ params }) => {
 
 //     // return json({ messages: chat.messages });
@@ -34,18 +34,33 @@ export const action: ActionFunction = async ({ request, params }) => {
     // to send chatgpt request since its a server only module
     const formData = await request.formData();
     const message = formData.get("message") as string;
+    const tools = formData.get("tools") as string;
 
-    console.log('params.chatId:', params.chatId);
+    if (message?.trim()) {
+        // console.log('params.chatId:', params.chatId);
+        console.log('in action in chats.$chatId:', message);
+        await storeChatMessages(message, 'user', params.chatId as string);
 
-    await storeChatMessages(message, 'user', params.chatId as string);
+        // TO DO: needs to handle chat history
+        const aiResponse = await getChatResponse([{ role: 'user', content: message }], params.chatId as string); 
+        console.log('AI RESPONSE:', aiResponse);
 
-    // TO DO: needs to handle chat history
-    const aiResponse = await getChatResponse([{ role: 'user', content: message }]); 
-    console.log('AI RESPONSE:', aiResponse);
+        await storeChatMessages(aiResponse as string, 'assistant', params.chatId as string);
+        return json({ messages: [{ role: 'assistant', content: aiResponse }] });
+    }
 
-    await storeChatMessages(aiResponse as string, 'assistant', params.chatId as string);
+    if (tools) {
+        // works!
+        const tools = formData.get("tools") as string;
+        const chatId = formData.get("chatId") as string;
+        // console.log('tools in action in action chat input chat.chatId:', tools);
+        // console.log('chatId in action in action chat input chat.chatId:', chatId);
 
-    return json({ messages: [{ role: 'assistant', content: aiResponse }] });
+        await storeChatTools(tools, chatId);
+        return json({ tools });    
+    }
+
+    return null;
 };
 
 
@@ -77,7 +92,7 @@ export default function Chats() {
         if(message?.trim()) {
             // console.log("Message submitted:", message);
             setMessages(prev => [...prev, { role: 'user', content: message }]);
-            console.log('set messages:', messages);
+            // console.log('set messages:', messages);
             // console.log('AI RESPONSE:', aiResponse);
 
             // Submit to action to get AI response

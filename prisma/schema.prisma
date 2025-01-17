@@ -20,6 +20,7 @@ model Chat {
   url       String
   chatId    String    @unique 
   messages  Message[]
+  tools     ChatTools?
   createdAt DateTime  @default(now())
 }
 
@@ -32,4 +33,12 @@ model Message {
   createdAt DateTime @default(now())
 
   @@index([chatId])
+}
+
+model ChatTools {
+  id        String   @id @default(uuid())
+  chatId    String   @unique(map: "ChatTools_unique_chatId")
+  tools     String
+  chat      Chat     @relation(fields: [chatId], references: [chatId])
+  createdAt DateTime @default(now())
 }
