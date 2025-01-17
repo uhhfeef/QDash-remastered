@@ -1,21 +1,25 @@
-import { Form, useParams } from "@remix-run/react";
+import { Form, useFetcher, useParams } from "@remix-run/react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Paperclip, ArrowUp } from "lucide-react";
 import { useState } from "react";
 import { handleFileUpload } from "~/services/duckDbService";
-import useDuckDB from "~/services/duckDbConfig";
-// import { handleFileUpload } from "~/utils/duckDbService";
+import { useDuckDB } from "~/services/duckDbConfig";
+import { generateTools } from "~/services/tools";
+import { ActionFunction } from "@remix-run/node";
+
+let tools: any[] = [];
 
 interface ChatInputProps {
     placeholder?: string;
     onSubmit?: (e: React.FormEvent<HTMLFormElement>) => void;
 }
-  
+
 export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatInputProps) {
   const params = useParams();
-  const chatId = params.chatId;
+  const chatId = params.chatId as string;
   const { db, conn } = useDuckDB();
+  const fetcher = useFetcher();
 
   const [files, setFiles] = useState<File[]>([])
 
@@ -37,11 +41,14 @@ export function ChatInput({ placeholder = "Type a message...", onSubmit }: ChatI
     setFiles(prevFiles => [...prevFiles, ...validFiles])
 
     for (const file of validFiles) {
-        const result = await handleFileUpload(file, db, conn);
-        // console.log('Result:', result);
+        const schemaInfo = await handleFileUpload(file, db, conn, chatId);
+        tools = generateTools(schemaInfo);
+        const toolstring = JSON.stringify(tools);
+        // console.log(`tools in chat input client code: ${toolstring}`, );
+        fetcher.submit({ tools: toolstring, chatId }, { method: "post" });
     }
     
-    // Log the selected files
+    // Log the selected files 
     validFiles.forEach(file => async () => {
       console.log('Selected file:', file.name, 'Type:', file.type)
     //   fetcher = useFetcher();
