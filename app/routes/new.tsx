@@ -27,12 +27,12 @@ export const action: ActionFunction = async ({ request }) => {
     console.log('message in action in /new:', message);
     await storeChatMessages(message, 'user', newChatId);
     // console.log(chatMessages);
+    const aiResponse = await getChatResponse([{ role: 'user', content: message }], newChatId); 
+    console.log('AI RESPONSE:', aiResponse);
+  
+    await storeChatMessages(aiResponse as string, 'assistant', newChatId);
   }
 
-  const aiResponse = await getChatResponse([{ role: 'user', content: message }]); 
-  console.log('AI RESPONSE:', aiResponse);
-
-  await storeChatMessages(aiResponse as string, 'assistant', newChatId);
 
 
   return redirect(`/chats/${newChatId}`);
@@ -40,6 +40,7 @@ export const action: ActionFunction = async ({ request }) => {
 
 export default function New() {
 
+  // TO DO: cleanup
   function handleSubmit(e: FormEvent<HTMLFormElement>): void {
     e.preventDefault();
     // console.log("Message submitted:", message);
@@ -48,7 +49,7 @@ export default function New() {
     if(message?.trim()) {
         // console.log("Message submitted:", message);
         // setMessages(prev => [...prev, { role: 'user', content: message }]);
-        console.log('set messages:', message);
+        // console.log('set messages:', message);
         // console.log('AI RESPONSE:', aiResponse);
 
         // Submit to action to get AI response
@@ -71,10 +72,10 @@ export default function New() {
           </div>
         </div>
 
-        <div className="flex py-4 text-sm gap-3 justify-between">
-          <p className="border px-2 bg-gray-50 rounded-full">Generate a...</p>
-          <p className="border px-2 bg-gray-50 rounded-full">Generate a...</p>
-          <p className="border px-2 bg-gray-50 rounded-full">Generate a...</p>
+        <div className="flex py-4 text-xs gap-3 justify-between">
+          <p className="border px-2 bg-gray-50 rounded-full">Show top 10 customers</p>
+          <p className="border px-2 bg-gray-50 rounded-full">Calculate monthly revenue</p>
+          <p className="border px-2 bg-gray-50 rounded-full">Group sales by region</p>
         </div>
       </div>
     );
