@@ -34,6 +34,17 @@ export async function getAllChatItems() {
   });
 }
 
+export async function getAllMessages(chatId: string) {
+  return prisma.message.findMany({
+    where: {
+      chatId: chatId
+    },
+    include: {
+      chat: true
+    }
+  });
+}
+
 export async function createChatItem({ name, url, chatId }: { name: string; url: string; chatId: string }) {
   console.log('=== CREATING chat ITEM ===');
   console.log('NAME:', name);
@@ -104,20 +115,32 @@ export async function storeChatMessages(message: string, role: string, chatId: s
       data: {
         role,
         content: message,
-        chatId
+        chat: {
+          connect: {
+            chatId: chatId
+          }
+        }
       }
   });
 }
 
 export async function getChatMessages(chatId: string) {
-    return prisma.message.findMany({ where: { chatId } });
+    return prisma.message.findMany(
+      { 
+        where: { chatId } ,
+        select: {
+          role: true,
+          content: true,
+        }
+      }
+    );
 }
 
 export async function storeChatTools(tools: string, chatId: string) {
     if (!chatId) throw new Error('chatId is required');
     
     // const toolString = JSON.stringify(tools);
-    console.log('=== STORING CHAT TOOLS ===');
+    // console.log('=== STORING CHAT TOOLS ===');
     // console.log('TOOLS:', tools);
     // console.log('CHAT ID:', chatId);
     

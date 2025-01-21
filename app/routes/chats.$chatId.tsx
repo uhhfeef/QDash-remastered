@@ -40,6 +40,7 @@ export const action: ActionFunction = async ({ request, params }) => {
     let aiResponse = null;
 
     if (message?.trim()) {
+        await storeChatMessages(message, 'user', params.chatId as string);
         // console.log('params.chatId:', params.chatId);
         let iterationCount = 0;
         const MAX_ITERATIONS = 3;
@@ -52,7 +53,9 @@ export const action: ActionFunction = async ({ request, params }) => {
     
                 console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
                 // const data = await sendChatRequest(messages, tools);
-                const completion = await getChatResponse([{ role: 'user', content: message }], params.chatId as string); 
+
+                const msgs = await getChatMessages(params.chatId as string);
+                const completion = await getChatResponse(msgs, params.chatId as string); 
 
                 
                 // console.log('%c Received response with trace_id:', 'color: #0066ff; font-weight: bold;', data.trace_id);
@@ -62,6 +65,7 @@ export const action: ActionFunction = async ({ request, params }) => {
                 // messages.push(message);
                 // chatManager.addMessage(message);
                 aiResponse = completion?.choices[0].message;
+                console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', aiResponse);
                 await storeChatMessages(aiResponse?.content as string, 'assistant', params.chatId as string);
 
     
@@ -77,7 +81,9 @@ export const action: ActionFunction = async ({ request, params }) => {
                         const toolResult = await handleToolCall(toolCall);
                         await storeChatMessages(toolResult.content as string, 'tool', params.chatId as string);
                     }
-                } 
+                } else {
+                    break; // TO DO: double chk why it stops the conversation here
+                }
 
             }
             console.groupEnd();
@@ -161,7 +167,7 @@ export default function Chats() {
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)]">
+        <div className="flex flex-col h-[calc(100vh-4rem)] overflow-y-auto overflow-x-hidden">
             <Split 
                 className="flex flex-grow"
                 sizes={[70, 30]}

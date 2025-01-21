@@ -51,6 +51,7 @@ export async function handleToolCall(toolCall: ChatCompletionMessageToolCall) {
             // const trendingPercentage = window.y[0];
             // createCard(args.title, value, trendingPercentage);
             // toolResult = { success: true, message: 'Card created successfully' };
+            toolResult = 'Card created successfully' ;
             // addMessageToChat(`Creating card with provided data.`, 'assistant');
             break;
 
@@ -96,6 +97,6 @@ export async function handleToolCall(toolCall: ChatCompletionMessageToolCall) {
     return {
         role: "tool",
         tool_call_id: toolCall.id,
-        content: JSON.stringify(toolResult)
+        content: toolResult
     };
 } 
