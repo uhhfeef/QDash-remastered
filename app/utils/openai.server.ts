@@ -11,7 +11,7 @@ export interface Message {
     content: string;
 }
 
-export async function getChatResponse(messages: Message[], chatId: string) {
+export async function getChatResponse(messages: Message[], chatId: string): Promise<OpenAI.Chat.Completions.ChatCompletion | null> {
     try {
         const tools = await getChatTools(chatId as string);
         console.log('tools in openai:', tools);
@@ -27,7 +27,7 @@ export async function getChatResponse(messages: Message[], chatId: string) {
             tools
 
         });
-        return completion.choices[0].message?.content;
+        return completion;
     } catch (error) {
         console.error("Error getting chat response:", error);
         return null;
