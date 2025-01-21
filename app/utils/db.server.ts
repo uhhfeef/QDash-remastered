@@ -66,9 +66,16 @@ export async function deleteChatItem(id: string) {
     where: { chatId: chat.chatId }  // Use chatId, not id
   });
 
-  await prisma.chatTools.delete({
+  // Check if chatTools record exists before deleting
+  const chatToolsRecord = await prisma.chatTools.findUnique({
     where: { chatId: chat.chatId }
   });
+
+  if (chatToolsRecord) {
+    await prisma.chatTools.delete({
+      where: { chatId: chat.chatId }
+    });
+  }
 
   // Then delete the chat itself
   return prisma.chat.delete({
