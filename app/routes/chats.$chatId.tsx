@@ -8,6 +8,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getChatResponse, type Message } from "~/utils/openai.server";
 // import { chatMessages } from "./chats.new";
 import { getChatMessages, storeChatMessages, storeChatTools } from "~/utils/db.server";
+import { Completions } from "openai/resources/completions.mjs";
+import { handleToolCall } from "~/utils/handleToolCall";
 // export const loader: LoaderFunction = async ({ params }) => {
 
 //     // return json({ messages: chat.messages });
@@ -35,18 +37,73 @@ export const action: ActionFunction = async ({ request, params }) => {
     const formData = await request.formData();
     const message = formData.get("message") as string;
     const tools = formData.get("tools") as string;
+    let aiResponse = null;
 
     if (message?.trim()) {
         // console.log('params.chatId:', params.chatId);
-        console.log('in action in chats.$chatId:', message);
-        await storeChatMessages(message, 'user', params.chatId as string);
+        let iterationCount = 0;
+        const MAX_ITERATIONS = 3;
+
+        try {
+            console.group('Chat Processing');
+            while (iterationCount < MAX_ITERATIONS) {
+                iterationCount++;
+                console.log('%c Iteration ' + iterationCount + ' of ' + MAX_ITERATIONS, 'background: #333; color: #00ff00; padding: 2px 6px; border-radius: 2px;');
+    
+                console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
+                // const data = await sendChatRequest(messages, tools);
+                const completion = await getChatResponse([{ role: 'user', content: message }], params.chatId as string); 
+
+                
+                // console.log('%c Received response with trace_id:', 'color: #0066ff; font-weight: bold;', data.trace_id);
+    
+                // const message = data.choices[0].message;
+                
+                // messages.push(message);
+                // chatManager.addMessage(message);
+                aiResponse = completion?.choices[0].message;
+                await storeChatMessages(aiResponse?.content as string, 'assistant', params.chatId as string);
+
+    
+                console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', message);
+    
+                // if (message.content) {
+                //     addMessageToChat(message.content, 'assistant', data.trace_id);
+                //     // if (message.content.includes('DONE')) break;
+                // }
+                
+                if (aiResponse?.tool_calls) {
+                    for (const toolCall of aiResponse.tool_calls) {
+                        const toolResult = await handleToolCall(toolCall);
+                        await storeChatMessages(toolResult.content as string, 'tool', params.chatId as string);
+                    }
+                } 
+
+            }
+            console.groupEnd();
+    
+            if (iterationCount >= MAX_ITERATIONS) {
+                // addMessageToChat("Reached maximum number of iterations. Stopping here.", 'assistant');
+                console.log("Reached maximum number of iterations. Stopping here.", 'assistant');
+            }
+
+            return json({ messages: [{ role: 'assistant', content: aiResponse?.content }] });
+
+    
+        } catch (error) {
+            console.error('Error:', error);
+            // addMessageToChat('Sorry, there was an error processing your request.', 'assistant');
+            console.log('Sorry, there was an error processing your request.', 'assistant');
+        }
+
+        // console.log('in action in chats.$chatId:', message);
+        // await storeChatMessages(message, 'user', params.chatId as string);
 
         // TO DO: needs to handle chat history
-        const aiResponse = await getChatResponse([{ role: 'user', content: message }], params.chatId as string); 
-        console.log('AI RESPONSE:', aiResponse);
+        // aiResponse = await getChatResponse([{ role: 'user', content: message }], params.chatId as string); 
+        // console.log('AI RESPONSE:', aiResponse);
 
-        await storeChatMessages(aiResponse as string, 'assistant', params.chatId as string);
-        return json({ messages: [{ role: 'assistant', content: aiResponse }] });
+        
     }
 
     if (tools) {
