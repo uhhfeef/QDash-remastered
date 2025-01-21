@@ -2,12 +2,12 @@
  * @fileoverview Main chat handling module that coordinates AI interactions and tool execution
  */
 
-import { tools } from '../services/config.js';
+import { tools } from '../../services/config.js';
 import { addMessageToChat, showError } from '../../modules/uiUtils.js';
 import { handleToolCall } from '../../modules/toolExecutor.js';
 import { createChatManager, MAX_ITERATIONS } from '../../modules/chatManager.js';
-import { sendChatRequest } from '../services/chatApiRequest.js';
-import { isDataLoaded } from '../services/duckDbService.js';
+import { sendChatRequest } from '../../services/chatApiRequest.js';
+import { isDataLoaded } from '../../services/duckDbService.js';
 
 const chatManager = createChatManager();
 
