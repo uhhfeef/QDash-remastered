@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { ChatCompletionAssistantMessageParam, ChatCompletionMessage, ChatCompletionToolMessageParam, ChatCompletionUserMessageParam } from "openai/resources/chat/completions.mjs";
 
 let prisma: PrismaClient;
 
@@ -25,9 +26,10 @@ export { prisma };
 // chat functions
 export async function getAllChatItems() {
   return prisma.chat.findMany({
-    include: {
-      messages: true
-    },
+    // including messages was causing error
+    // include: {
+    //   messages: true
+    // },
     orderBy: {
       createdAt: 'desc'
     }
@@ -169,4 +171,26 @@ export async function getChatTools(chatId: string) {
     
     if (!chatTools) return null;
     return JSON.parse(chatTools.tools);
+}
+
+export async function storeChatHistory(message: ChatCompletionUserMessageParam | ChatCompletionAssistantMessageParam | ChatCompletionToolMessageParam | ChatCompletionMessage | undefined, chatId: string) {
+    if (!chatId) throw new Error('chatId is required');
+    
+    return prisma.chatHistory.create({
+        data: {
+            chatId,
+            history: message as any
+        }
+    });
+}
+
+export async function getChatHistory(chatId: string): Promise<ChatCompletionMessage[]> {
+    if (!chatId) throw new Error('chatId is required');
+    
+    const messages = await prisma.chatHistory.findMany({
+        where: { chatId },
+        orderBy: { createdAt: 'asc' }
+    });
+
+    return messages.map(msg => (msg.history as unknown) as ChatCompletionMessage);
 }

@@ -7,7 +7,7 @@ import { Button } from "~/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { getChatResponse, type Message } from "~/utils/openai.server";
 // import { chatMessages } from "./chats.new";
-import { getChatMessages, storeChatMessages, storeChatTools } from "~/utils/db.server";
+import { getChatHistory, getChatMessages, storeChatHistory, storeChatMessages, storeChatTools } from "~/utils/db.server";
 import { Completions } from "openai/resources/completions.mjs";
 import { handleToolCall } from "~/utils/handleToolCall";
 // export const loader: LoaderFunction = async ({ params }) => {
@@ -37,10 +37,12 @@ export const action: ActionFunction = async ({ request, params }) => {
     const formData = await request.formData();
     const message = formData.get("message") as string;
     const tools = formData.get("tools") as string;
+    const chatId = params.chatId as string;
     let aiResponse = null;
 
     if (message?.trim()) {
-        await storeChatMessages(message, 'user', params.chatId as string);
+        await storeChatMessages(message, 'user', chatId);
+        await storeChatHistory({ role: 'user', content: message }, chatId);
         // console.log('params.chatId:', params.chatId);
         let iterationCount = 0;
         const MAX_ITERATIONS = 3;
@@ -54,8 +56,8 @@ export const action: ActionFunction = async ({ request, params }) => {
                 console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
                 // const data = await sendChatRequest(messages, tools);
 
-                const msgs = await getChatMessages(params.chatId as string);
-                const completion = await getChatResponse(msgs, params.chatId as string); 
+                
+                const completion = await getChatResponse( chatId); 
 
                 
                 // console.log('%c Received response with trace_id:', 'color: #0066ff; font-weight: bold;', data.trace_id);
@@ -67,6 +69,8 @@ export const action: ActionFunction = async ({ request, params }) => {
                 aiResponse = completion?.choices[0].message;
                 console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', aiResponse);
                 await storeChatMessages(aiResponse?.content as string, 'assistant', params.chatId as string);
+                await storeChatHistory(aiResponse, chatId);
+    
 
     
                 console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', message);
@@ -80,6 +84,7 @@ export const action: ActionFunction = async ({ request, params }) => {
                     for (const toolCall of aiResponse.tool_calls) {
                         const toolResult = await handleToolCall(toolCall);
                         await storeChatMessages(toolResult.content as string, 'tool', params.chatId as string);
+                        await storeChatHistory(toolResult, chatId);
                     }
                 } else {
                     break; // TO DO: double chk why it stops the conversation here
