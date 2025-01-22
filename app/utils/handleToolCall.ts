@@ -95,8 +95,8 @@ export async function handleToolCall(toolCall: ChatCompletionMessageToolCall) {
     // });
 
     return {
-        role: "tool",
+        role: "tool" as const,
         tool_call_id: toolCall.id,
-        content: toolResult
+        content: toolResult as string
     };
 } 

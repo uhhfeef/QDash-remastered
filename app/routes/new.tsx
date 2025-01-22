@@ -13,6 +13,7 @@ export const action: ActionFunction = async ({ request }) => {
   console.log('NEW CHAT ID:', newChatId);
 
   const chats = await getAllChatItems();
+  // console.log('chats:', chats);
 
   const chatName = `Chat ${chats.length + 1}`
   const newChatUrl = `/chats/${newChatId}`;
