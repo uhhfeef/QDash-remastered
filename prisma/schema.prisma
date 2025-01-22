@@ -42,3 +42,12 @@ model ChatTools {
   chat      Chat     @relation(fields: [chatId], references: [chatId])
   createdAt DateTime @default(now())
 }
+
+model ChatHistory {
+  id        String   @id @default(uuid())
+  chatId    String   
+  history   Json
+  createdAt DateTime @default(now())
+
+  @@index([chatId])
+}
