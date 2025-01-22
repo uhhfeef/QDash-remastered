@@ -28,9 +28,9 @@ export const action: ActionFunction = async ({ request }) => {
     console.log('message in action in /new:', message);
     await storeChatMessages(message, 'user', newChatId);
     // console.log(chatMessages);
-    const completion = await getChatResponse([{ role: 'user', content: message }], newChatId); 
+    const completion = await getChatResponse(newChatId); 
     // console.log('AI RESPONSE:', completion);
-  
+    
     await storeChatMessages(completion?.choices[0].message.content as string, 'assistant', newChatId);
   }
 
