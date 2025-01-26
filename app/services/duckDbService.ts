@@ -1,11 +1,13 @@
 import { initDuckDB } from './[old]duckDbConfig.js';
 import * as XLSX from 'xlsx';
 import { AsyncDuckDB, AsyncDuckDBConnection } from '@duckdb/duckdb-wasm';
-import { generateTools } from './tools';
+import { generateTools } from './[old]tools.js';
 import { storeChatTools } from '~/utils/db.server';
+import { useDuckDB } from './duckDbConfig.js';
 
 // let db: AsyncDuckDB | null = null;
-// let conn= null;
+let db = null;
+let conn: AsyncDuckDBConnection | null = null;
 let isLoaded = false;
 let currentTableName: null = null;
 let loadedTables = new Set();
@@ -72,6 +74,11 @@ async function excelToCSV(file: File): Promise<File> {
 // This function handles both CSV and Excel file uploads
 export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null, chatId: string): Promise<any> {
     try {
+        console.log('File upload started:', {
+            name: file?.name,
+            size: file?.size,
+            type: file?.type
+        });
         // if (!conn) {
         //     throw new Error("Database connection not initialized");
         // }
@@ -88,10 +95,11 @@ export async function handleFileUpload(file: File, db: AsyncDuckDB | null, conn:
         const tableName = processFile.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '_');
         console.log(`Processing table: ${tableName}`);
 
-        // Register the file content with DuckDB
-        await db?.registerFileBuffer(processFile.name, new Uint8Array(await processFile.arrayBuffer()));
+        // Register the file content with DuckDB FIRST
+        const fileBuffer = await processFile.arrayBuffer();
+        await db?.registerFileBuffer(processFile.name, new Uint8Array(fileBuffer));
         
-        // Check if the file has headers
+        // THEN check if the file has headers
         const hasHeaders = await checkCsvHeaders(processFile.name, db, conn);
         if (hasHeaders === false) {
             alert('1 or more headers are not present in file: ' + file.name);
@@ -159,13 +167,13 @@ export async function getSchema(db: AsyncDuckDB | null, conn: AsyncDuckDBConnect
     }
 }
 
-export async function executeDuckDbQuery(query: any) {
+export async function executeDuckDbQuery(query: any, db: AsyncDuckDB | null, conn: AsyncDuckDBConnection | null) {
     try {
         if (!conn) {
             throw new Error("Database connection not initialized");
         }
 
-        const result = await conn.query(query, { returnResultType: "arrow" });
+        const result = await conn.query(query);
         return convertArrowToRows(result);
     } catch (error) {
         // console.error("Error executing DuckDB query:", error);
@@ -218,14 +226,14 @@ function convertArrowToRows(arrowResult: { schema: { fields: any[]; }; batches: 
     
     for (const batch of arrowResult.batches) {
         const numRows = batch.numRows;
-        const columnData = {};
+        const columnData: Record<string, any> = {};
         
         columns.forEach((col: string | number, i: any) => {
             columnData[col] = batch.getChildAt(i).toArray();
         });
         
         for (let i = 0; i < numRows; i++) {
-            const row = {};
+            const row: Record<string, any> = {};
             columns.forEach((col: string | number) => {
                 let value = columnData[col][i];
                 if (typeof value === 'bigint') {

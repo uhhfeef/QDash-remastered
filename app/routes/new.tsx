@@ -10,7 +10,7 @@ import { getChatResponse } from "~/utils/openai.server";
 export const action: ActionFunction = async ({ request }) => {
   // console.log('=== LOAD NEW CHAT ACTION TRIGGERED ===');
   const newChatId = uuidv4();
-  console.log('NEW CHAT ID:', newChatId);
+  // console.log('NEW CHAT ID:', newChatId);
 
   const chats = await getAllChatItems();
   // console.log('chats:', chats);
@@ -25,7 +25,7 @@ export const action: ActionFunction = async ({ request }) => {
 
   if (message?.trim()) {
     // Create new chat and its first message
-    console.log('message in action in /new:', message);
+    // console.log('message in action in /new:', message);
     await storeChatMessages(message, 'user', newChatId);
     // console.log(chatMessages);
     const completion = await getChatResponse(newChatId); 

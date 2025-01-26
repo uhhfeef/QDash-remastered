@@ -17,7 +17,7 @@ import { getAllChatItems } from "./utils/db.server";
 import { initDuckDB } from "./services/[old]duckDbConfig";
 import { useEffect } from "react";
 // import useDuckDB from "./services/duckDbConfig";
-import { DuckDBProvider } from "./services/duckDbConfig";
+import { DuckDBProvider, useDuckDB } from "./services/duckDbConfig";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -51,7 +51,7 @@ export const loader: LoaderFunction = async () => {
 };
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  // const db = useDuckDB();
+  // const { db, conn } = useDuckDB();
 
   // useEffect(() => {
   //   if (db) {

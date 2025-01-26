@@ -48,9 +48,9 @@ export async function getAllMessages(chatId: string) {
 }
 
 export async function createChatItem({ name, url, chatId }: { name: string; url: string; chatId: string }) {
-  console.log('=== CREATING chat ITEM ===');
-  console.log('NAME:', name);
-  console.log('URL:', url);
+  // console.log('=== CREATING chat ITEM ===');
+  // console.log('NAME:', name);
+  // console.log('URL:', url);
   // console.log('CREATED AT:', createdAt);
   return prisma.chat.create({
     data: {
@@ -103,10 +103,10 @@ export async function getChatItem(id: string) {
 }
 
 export async function storeChatMessages(message: string, role: string, chatId: string) {
-    console.log('=== STORING CHAT ===');
-    console.log('MESSAGE:', message);
-    console.log('ROLE:', role);
-    console.log('CHAT ID:', chatId);
+    // console.log('=== STORING CHAT ===');
+    // console.log('MESSAGE:', message);
+    // console.log('ROLE:', role);
+    // console.log('CHAT ID:', chatId);
 
     let chat = await prisma.chat.findUnique({ where: { id: chatId } });
     // if(!chat) { // if chat doesn't exist, create it
@@ -175,7 +175,8 @@ export async function getChatTools(chatId: string) {
 
 export async function storeChatHistory(message: ChatCompletionUserMessageParam | ChatCompletionAssistantMessageParam | ChatCompletionToolMessageParam | ChatCompletionMessage | undefined, chatId: string) {
     if (!chatId) throw new Error('chatId is required');
-    
+    // console.log('=== STORING CHAT HISTORY ===');
+    // console.log('MESSAGE:', message);
     return prisma.chatHistory.create({
         data: {
             chatId,

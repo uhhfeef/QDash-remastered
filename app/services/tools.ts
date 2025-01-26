@@ -27,72 +27,24 @@ export function generateTools(tableSchema: string) {
                 }
             },
         },
-        {
-            type: "function",
-            function: {
-                name: "createChart",
-                description: "Create a chart with the provided x and y values. ",
-                parameters: {
-                    type: "object",
-                    properties: {
-                        x: { 
-                            type: "array", 
-                            description: "The fetched database x values for the chart", 
-                            items: { type: "number" } 
-                        },
-                        y: { 
-                            type: "array", 
-                            description: "The fetched database y values for the chart", 
-                            items: { type: ["number", "string"] } 
-                        },
-                        chartType: { 
-                            type: "string", 
-                            description: "The type of chart to create", 
-                            enum: ["line", "bar", "scatter", "pie"]
-                        },
-                        title: {
-                            type: "string",
-                            description: "The title of the chart"
-                        },
-                        xAxisTitle: {
-                            type: "string",
-                            description: "The label for the x-axis"
-                        },
-                        yAxisTitle: {
-                            type: "string",
-                            description: "The label for the y-axis"
-                        }
-                    },
-                    required: ["x", "y", "chartType", "title"],
-                    additionalProperties: false
-                }
-            }
-        },
-        {
-            type: "function",
-            function: {
-                name: "createCard",
-                description: "Create a card with a single value and title",
-                parameters: {
-                    type: "object",
-                    properties: {
-                        value: {
-                            type: ["string", "number"],
-                            description: "The value to display in the card"
-                        },
-                        title: {
-                            type: "string",
-                            description: "The title of the card"
-                        },
-                        trend: {
-                            type: ["string", "number"],
-                            description: "The trend value to display in the card"
-                        }
-                    },
-                    required: ["value", "title", "trend"],
-                    additionalProperties: false
-                }
-            }
-        }
+        // {
+        //     "type": "function",
+        //     "function": {
+        //         "name": "create_shadcn_barchart",
+        //         "description": "Creates a shadcn barchart component in Remix",
+        //         "strict": true,
+        //         "parameters": {
+        //             "type": "object",
+        //             "properties": {
+        //                 "component": {
+        //                     "type": "string",
+        //                     "description": "The barchart JSX component to create. It must be coded in JSX.",
+        //                 }
+        //             },
+        //             "required": ["component"],
+        //             "additionalProperties": false
+        //         }
+        //     }
+        // }
     ];
 }

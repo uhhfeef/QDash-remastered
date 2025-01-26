@@ -1,5 +1,5 @@
 import { addMessageToChat } from './uiUtils.js';
-import { executeDuckDbQuery } from '../services/duckDbService.js';
+// import { executeDuckDbQuery } from '../services/duckDbService.js';
 import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';

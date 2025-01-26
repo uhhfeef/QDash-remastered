@@ -20,7 +20,7 @@ const dashboards = new Map<string, {name: string, url: string}>();
 
 
 export const action: ActionFunction = async ({ request }) => {
-    console.log('=== ACTION TRIGGERED ===');
+    // console.log('=== ACTION TRIGGERED ===');
 
     const newChatId = uuidv4();
     // console.log('NEW CHAT ID:', newChatId);

@@ -1,5 +1,4 @@
 import { addMessageToChat } from './uiUtils.js';
-import { executeDuckDbQuery } from '../services/duckDbService.js';
 import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';
@@ -23,10 +22,10 @@ export async function handleToolCall(toolCall, messages) {
             try {
                 const queryResult = await executeDuckDbQuery(args.query);
                 if (queryResult && queryResult.length > 0) {
-                    window.x = queryResult.map(row => Object.values(row)[0]);
-                    window.y = queryResult.map(row => Object.values(row)[1]);
+                    let x = queryResult.map(row => Object.values(row)[0]);
+                    let y = queryResult.map(row => Object.values(row)[1]);
                     console.log('%cQuery results:', 'color: #4CAF50; font-weight: bold;');
-                    console.table({ x: window.x, y: window.y });
+                    console.table({ x, y });
                     toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
                     // toolResult = { success: true, x: window.x, y: window.y };
                 }
