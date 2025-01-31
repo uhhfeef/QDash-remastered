@@ -1,6 +1,14 @@
 # QDash
 
+<div align="center">
+  <img src="public/logo.png" alt="QDash Logo" width="200"/>
+</div>
+
 QDash is a modern, interactive dashboard application that allows users to create, manage, and analyze data through an intuitive chat interface. Built with Remix and TypeScript, it combines the power of natural language processing with data visualization to make data analysis more accessible and efficient.
+
+<div align="center">
+  <img src="public/assets/image.jpeg" alt="QDash Interface" width="800"/>
+</div>
 
 ## 🌟 Features
 
